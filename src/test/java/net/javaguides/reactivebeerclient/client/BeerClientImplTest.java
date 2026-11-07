@@ -25,13 +25,39 @@ class BeerClientImplTest {
 
     @Test
     void listBeers() {
-        Mono<BeerPagedList> beerPagedListMono = beerClient.listBeers(1, 5, null,
+        Mono<BeerPagedList> beerPagedListMono = beerClient.listBeers(null, null, null,
                 null, false);
 
         BeerPagedList beerPagedList = beerPagedListMono.block();
 
         assertThat(beerPagedList).isNotNull();
         assertThat(beerPagedList.getContent().size()).isGreaterThan(0);
+
+        System.out.println("beerPagedList = " + beerPagedList.toList());
+    }
+
+    @Test
+    void listBeersSize10() {
+        Mono<BeerPagedList> beerPagedListMono = beerClient.listBeers(1, 10, null,
+                null, false);
+
+        BeerPagedList beerPagedList = beerPagedListMono.block();
+
+        assertThat(beerPagedList).isNotNull();
+        assertThat(beerPagedList.getContent().size()).isEqualTo(10);
+
+        System.out.println("beerPagedList = " + beerPagedList.toList());
+    }
+
+    @Test
+    void listBeersNoRecords() {
+        Mono<BeerPagedList> beerPagedListMono = beerClient.listBeers(10, 20, null,
+                null, false);
+
+        BeerPagedList beerPagedList = beerPagedListMono.block();
+
+        assertThat(beerPagedList).isNotNull();
+        assertThat(beerPagedList.getContent().size()).isEqualTo(0);
 
         System.out.println("beerPagedList = " + beerPagedList.toList());
     }
