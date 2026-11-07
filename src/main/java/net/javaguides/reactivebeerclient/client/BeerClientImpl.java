@@ -1,9 +1,12 @@
 package net.javaguides.reactivebeerclient.client;
 
 import java.util.UUID;
+import lombok.RequiredArgsConstructor;
 import net.javaguides.reactivebeerclient.model.BeerDto;
 import net.javaguides.reactivebeerclient.model.BeerPagedList;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
+import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
 /**
@@ -15,7 +18,12 @@ import reactor.core.publisher.Mono;
  * @version 07/11/2026 - 11:13
  * @since 1.25
  */
+@Service
+@RequiredArgsConstructor
 public class BeerClientImpl implements BeerClient {
+
+    private final WebClient webClient;
+
     @Override
     public Mono<BeerDto> getBeerById(UUID id, Boolean showInventoryOnHand) {
         return null;
