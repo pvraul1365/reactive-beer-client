@@ -1,5 +1,6 @@
 package net.javaguides.reactivebeerclient.client;
 
+import java.math.BigDecimal;
 import java.util.UUID;
 import lombok.extern.slf4j.Slf4j;
 import net.javaguides.reactivebeerclient.config.WebClientConfig;
@@ -7,6 +8,8 @@ import net.javaguides.reactivebeerclient.model.BeerDto;
 import net.javaguides.reactivebeerclient.model.BeerPagedList;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import reactor.core.publisher.Mono;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
@@ -76,6 +79,18 @@ class BeerClientImplTest {
 
     @Test
     void createBeer() {
+        BeerDto beerDto = BeerDto.builder()
+                .beerName("DogFish Head 90 Minute IPA")
+                .beerStyle("IPA")
+                .upc("123456789012")
+                .price(new BigDecimal("10.99"))
+                .build();
+
+        final Mono<ResponseEntity<Void>> responseEntityMono = beerClient.createBeer(beerDto);
+        final ResponseEntity responseEntity = responseEntityMono.block();
+
+        assertThat(responseEntity).isNotNull();
+        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.CREATED);
     }
 
     @Test

@@ -8,6 +8,8 @@ import net.javaguides.reactivebeerclient.model.BeerDto;
 import net.javaguides.reactivebeerclient.model.BeerPagedList;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.reactive.function.BodyInserter;
+import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
@@ -54,8 +56,12 @@ public class BeerClientImpl implements BeerClient {
     }
 
     @Override
-    public Mono<ResponseEntity> createBeer(final BeerDto beerDto) {
-        return null;
+    public Mono<ResponseEntity<Void>> createBeer(final BeerDto beerDto) {
+        return webClient.post()
+                .uri(WebClientProperties.BEER_V1_PATH)
+                .body(BodyInserters.fromValue(beerDto))
+                .retrieve()
+                .toBodilessEntity();
     }
 
     @Override
