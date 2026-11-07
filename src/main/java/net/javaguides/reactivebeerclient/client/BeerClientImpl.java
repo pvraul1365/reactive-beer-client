@@ -27,12 +27,20 @@ public class BeerClientImpl implements BeerClient {
     private final WebClient webClient;
 
     @Override
-    public Mono<BeerDto> getBeerById(UUID id, Boolean showInventoryOnHand) {
-        return null;
+    public Mono<BeerDto> getBeerById(final UUID id, final Boolean showInventoryOnHand) {
+
+        return webClient.get()
+                .uri(uriBuilder -> uriBuilder.path(WebClientProperties.BEER_V1_PATH + "/{id}")
+                        .queryParamIfPresent("showInventoryOnHand", Optional.ofNullable(showInventoryOnHand))
+                        .build(id))
+                .retrieve()
+                .bodyToMono(BeerDto.class);
     }
 
     @Override
-    public Mono<BeerPagedList> listBeers(Integer pageNumber, Integer pageSize, String beerName, String beerStyle, Boolean showInventoryOnhand) {
+    public Mono<BeerPagedList> listBeers(final Integer pageNumber, final Integer pageSize, final String beerName,
+                                         final String beerStyle, final Boolean showInventoryOnhand) {
+
         return webClient.get()
                 .uri(uriBuilder -> uriBuilder.path(WebClientProperties.BEER_V1_PATH)
                         .queryParamIfPresent("pageNumber", Optional.ofNullable(pageNumber))
@@ -46,12 +54,12 @@ public class BeerClientImpl implements BeerClient {
     }
 
     @Override
-    public Mono<ResponseEntity> createBeer(BeerDto beerDto) {
+    public Mono<ResponseEntity> createBeer(final BeerDto beerDto) {
         return null;
     }
 
     @Override
-    public Mono<ResponseEntity> updateBeer(BeerDto beerDto) {
+    public Mono<ResponseEntity> updateBeer(final BeerDto beerDto) {
         return null;
     }
 
@@ -61,7 +69,12 @@ public class BeerClientImpl implements BeerClient {
     }
 
     @Override
-    public Mono<BeerDto> getBeerByUPC(String upc) {
-        return null;
+    public Mono<BeerDto> getBeerByUPC(final String upc) {
+        return webClient.get()
+                .uri(uriBuilder -> uriBuilder.path(WebClientProperties.BEER_V1_UPC_PATH + "/{upc}")
+                        .build(upc))
+                .retrieve()
+                .bodyToMono(BeerDto.class);
     }
+
 }
