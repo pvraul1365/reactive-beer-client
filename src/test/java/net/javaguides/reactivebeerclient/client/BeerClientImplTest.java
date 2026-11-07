@@ -1,10 +1,13 @@
 package net.javaguides.reactivebeerclient.client;
 
 import net.javaguides.reactivebeerclient.config.WebClientConfig;
+import net.javaguides.reactivebeerclient.model.BeerPagedList;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Mono;
 
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
 class BeerClientImplTest {
@@ -22,6 +25,15 @@ class BeerClientImplTest {
 
     @Test
     void listBeers() {
+        Mono<BeerPagedList> beerPagedListMono = beerClient.listBeers(1, 5, null,
+                null, false);
+
+        BeerPagedList beerPagedList = beerPagedListMono.block();
+
+        assertThat(beerPagedList).isNotNull();
+        assertThat(beerPagedList.getContent().size()).isGreaterThan(0);
+
+        System.out.println("beerPagedList = " + beerPagedList.toList());
     }
 
     @Test

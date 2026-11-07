@@ -2,6 +2,7 @@ package net.javaguides.reactivebeerclient.client;
 
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
+import net.javaguides.reactivebeerclient.config.WebClientProperties;
 import net.javaguides.reactivebeerclient.model.BeerDto;
 import net.javaguides.reactivebeerclient.model.BeerPagedList;
 import org.springframework.http.ResponseEntity;
@@ -31,7 +32,10 @@ public class BeerClientImpl implements BeerClient {
 
     @Override
     public Mono<BeerPagedList> listBeers(Integer pageNumber, Integer pageSize, String beerName, String beerStyle, Boolean showInventoryOnhand) {
-        return null;
+        return webClient.get()
+                .uri(WebClientProperties.BEER_V1_PATH)
+                .retrieve()
+                .bodyToMono(BeerPagedList.class);
     }
 
     @Override
