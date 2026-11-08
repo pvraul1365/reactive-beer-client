@@ -2,6 +2,7 @@ package net.javaguides.reactivebeerclient.client;
 
 import java.math.BigDecimal;
 import java.util.UUID;
+import java.util.concurrent.CountDownLatch;
 import lombok.extern.slf4j.Slf4j;
 import net.javaguides.reactivebeerclient.config.WebClientConfig;
 import net.javaguides.reactivebeerclient.model.BeerDto;
@@ -172,5 +173,26 @@ class BeerClientImplTest {
             final ResponseEntity<Void> responseEntity = responseEntityMono.block();
             assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
         });
+    }
+
+    @Test
+    void functionalTestGetBeerById() throws InterruptedException {
+        CountDownLatch latch = new CountDownLatch(1);
+
+        beerClient.listBeers(null, null, null, null, false)
+                .flatMap(beerPagedList -> {
+                    final UUID beerId = beerPagedList.getContent().get(0).getId();
+                    return beerClient.getBeerById(beerId, false);
+                })
+                .doOnNext(beerDto -> {
+                    log.info("beerDto = " + beerDto);
+                    assertThat(beerDto).isNotNull();
+                    assertThat(beerDto.getBeerName()).isNotBlank();
+                    assertThat(beerDto.getBeerName()).isEqualTo("Mango Bobs");
+                })
+                .doFinally(signalType -> latch.countDown())
+                .subscribe();
+
+        latch.await();
     }
 }
